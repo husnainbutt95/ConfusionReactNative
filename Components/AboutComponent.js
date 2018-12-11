@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { LEADERS } from '../shared/leaders';
 import { FlatList, Text, ScrollView } from 'react-native';
 import { ListItem, Card } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = state =>{
+    return {
+        leaders: state.leaders
+    }
+}
 
 class About extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            leaders: LEADERS
-        }
-    }
     static navigationOptions = {
         title: 'About Us'
     }
@@ -22,7 +23,7 @@ class About extends Component{
                         title={item.name}
                         subtitle={item.description}
                         hideChevron={true}
-                        leftAvatar={{source: require('./images/alberto.png')}}
+                        leftAvatar={{source: {uri: baseUrl + '/' + item.image}}}
                     />
                 </Card>
             );
@@ -35,13 +36,13 @@ class About extends Component{
                 <Text>The restaurant traces its humble beginnings to The Frying Pan, a successful chain started by our CEO, Mr. Peter Pan, that featured for the first time the world's best cuisines in a pan.
                 </Text>
             </Card>
-            <FlatList
-                data={this.state.leaders}
-                renderItem={(renderItem)}
-                keyExtractor={(item) => item.id.toString()}
+            <FlatList 
+                data={this.props.leaders.leaders}
+                renderItem={renderItem}
+                keyExtractor={item => item.id.toString()}
             />
             </ScrollView>
         );
     }
 }
-export default About;
+export default connect(mapStateToProps)(About);
