@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Text, ScrollView, FlatList, Modal, Button, TextInput, StyleSheet, Alert, PanResponder } from 'react-native';
+import { View, Text, ScrollView, FlatList, Modal, Button, TextInput, StyleSheet, Alert, PanResponder, Share } from 'react-native';
 import { Card, Icon, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -57,11 +57,21 @@ function RenderDish(props){
             return true;
         }
     });
+
+    const shareDish = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: title + ': ' + message + ' ' + url,
+            url: url
+        },{
+            dialogTitle: 'Share ' + title
+        });
+    }
+
     if(dish != null){
         return(
             <Animatable.View animation="fadeInDown" duration={2000} delay={1000} 
-            ref={this.handleViewRef}
-            {...panResponder.panHandlers}>
+            ref={this.handleViewRef} {...panResponder.panHandlers}>
                 <Card
                 featuredTitle={dish.name}
                 image={{uri: baseUrl + '/' + dish.image}}>
@@ -80,10 +90,18 @@ function RenderDish(props){
                         <Icon
                             raised
                             reverse
-                            name={'pencil'}
+                            name='pencil'
                             type='font-awesome'
                             color='#f50'
                             onPress={() => props.toggleModal()}
+                        />
+                        <Icon
+                            raised
+                            reverse
+                            name='share'
+                            type='font-awesome'
+                            color='#512AD8'
+                            onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)}
                         />
                         <Modal animationType = {"slide"} transparent = {false}
                             visible = {props.showModal}
